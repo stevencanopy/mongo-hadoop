@@ -35,8 +35,11 @@ import org.bson.BSONObject;
 
 public class MongoRecordReader extends RecordReader<Object, BSONObject> {
 
-    public MongoRecordReader(final MongoInputSplit split) {
+    private final boolean keyToString;
+
+    public MongoRecordReader(final MongoInputSplit split, boolean keyToString) {
         this.split = split;
+        this.keyToString = keyToString;
         cursor = split.getCursor();
     }
 
@@ -51,7 +54,7 @@ public class MongoRecordReader extends RecordReader<Object, BSONObject> {
     @Override
     public Object getCurrentKey() {
         Object key = MongoPathRetriever.get(current, split.getKeyField());
-        return null != key ? key : NullWritable.get();
+        return null != key ? this.keyToString ? key.toString() : key : NullWritable.get();
     }
 
     @Override
@@ -82,6 +85,12 @@ public class MongoRecordReader extends RecordReader<Object, BSONObject> {
             }
 
             current = cursor.next();
+            if (this.keyToString) {
+                Object key = MongoPathRetriever.get(current, split.getKeyField());
+                if (key != null && !split.getKeyField().contains(".")) {
+                    current.put(split.getKeyField(), key.toString());
+                }
+            }
             seen++;
 
             return true;

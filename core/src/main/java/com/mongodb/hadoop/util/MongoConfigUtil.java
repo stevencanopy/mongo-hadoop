@@ -201,6 +201,8 @@ public final class MongoConfigUtil {
      */
     public static final String SPLITS_USE_RANGEQUERY = "mongo.input.split.use_range_queries";
 
+    public static final String INPUT_KEY_TO_STRING = "mongo.input.key_to_string";
+
     /**
      * Shared MongoClient instance cache.
      */
@@ -798,6 +800,10 @@ public final class MongoConfigUtil {
         }
 
         conf.set(INPUT_MONGOS_HOSTS, raw);
+    }
+
+    public static boolean getKeyToString(final Configuration conf) {
+        return conf.getBoolean(INPUT_KEY_TO_STRING, false);
     }
 
     /**

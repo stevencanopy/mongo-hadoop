@@ -22,6 +22,7 @@ import com.mongodb.hadoop.input.MongoInputSplit;
 import com.mongodb.hadoop.splitter.MongoSplitter;
 import com.mongodb.hadoop.splitter.MongoSplitterFactory;
 import com.mongodb.hadoop.splitter.SplitFailedException;
+import com.mongodb.hadoop.util.MongoConfigUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
@@ -46,7 +47,7 @@ public class MongoInputFormat extends InputFormat<Object, BSONObject> {
 
         final MongoInputSplit mis = (MongoInputSplit) split;
 
-        return new com.mongodb.hadoop.input.MongoRecordReader(mis);
+        return new com.mongodb.hadoop.input.MongoRecordReader(mis, MongoConfigUtil.getKeyToString(context.getConfiguration()));
     }
 
     @Override
